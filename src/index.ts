@@ -2,7 +2,7 @@ import { Elysia } from "elysia";
 import { users } from "./services/users";
 import { auth } from "./services/auth";
 
-const app = new Elysia()
+const app = new Elysia({ prefix: "/api" })
   .use(auth)
   .use(users)
   .get("/", () => "Hello Elysia").listen(3000);

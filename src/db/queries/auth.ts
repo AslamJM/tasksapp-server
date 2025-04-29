@@ -1,7 +1,7 @@
 import { SignInInput } from "../../models/auth";
 import { verifyPassword } from "../../utils/password";
-import { createSession } from "./session";
-import { getUserByEmail } from "./user";
+import { createSession, getSessionById } from "./session";
+import { getUserByEmail, getUserById } from "./user";
 
 export async function signIn(input: SignInInput) {
     try {
@@ -17,6 +17,21 @@ export async function signIn(input: SignInInput) {
         return {
             user: rest,
             session
+        }
+
+    } catch (error) {
+        throw error
+    }
+}
+
+export async function profile(sessionId: string) {
+    try {
+        const session = await getSessionById(sessionId)
+        const user = await getUserById(session.user_id)
+        const { name, email, role } = user
+
+        return {
+            name, email, role
         }
 
     } catch (error) {

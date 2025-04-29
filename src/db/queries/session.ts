@@ -26,3 +26,24 @@ export async function getSessionById(id: string) {
         throw error
     }
 }
+
+export async function validateSession(sessionId: string, time: Date) {
+    try {
+        const session = await getSessionById(sessionId)
+        if (session.expired_at > time) {
+            return session.user_id
+        }
+        return null
+    } catch (error) {
+        throw error
+    }
+}
+
+export async function deleteSession(id: string) {
+    try {
+        await db.delete(sessionsTable).where(eq(sessionsTable.id, id))
+        return true
+    } catch (error) {
+        throw error
+    }
+}
