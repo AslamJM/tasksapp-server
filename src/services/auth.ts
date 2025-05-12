@@ -14,6 +14,8 @@ const authService = new Elysia({ prefix: "auth/service" })
         isSignedIn: isSignedIn
     })
 
+
+
 export const auth = new Elysia({ prefix: "/auth" })
     .use(authService)
     .post("/sign-in", async ({ body, cookie: { token }, error }) => {

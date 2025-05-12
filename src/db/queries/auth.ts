@@ -1,12 +1,12 @@
 import { SignInInput } from "../../models/auth";
 import { verifyPassword } from "../../utils/password";
 import { createSession, getSessionById } from "./session";
-import { getUserByEmail, getUserById } from "./user";
+import { getUserByUsername, getUserById } from "./user";
 
 export async function signIn(input: SignInInput) {
     try {
-        const { email, password } = input
-        const user = await getUserByEmail(email)
+        const { username, password } = input
+        const user = await getUserByUsername(username)
 
         if (!user || !await (verifyPassword(password, user.password))) {
             throw new Error("invalid credentials")
@@ -28,10 +28,10 @@ export async function profile(sessionId: string) {
     try {
         const session = await getSessionById(sessionId)
         const user = await getUserById(session.user_id)
-        const { name, email, role } = user
+        const { name, username, role } = user
 
         return {
-            name, email, role
+            name, username, role
         }
 
     } catch (error) {

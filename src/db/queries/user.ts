@@ -17,11 +17,11 @@ export const getAllUsers = async () => {
 
 export const createUser = async (input: CreateUserInput) => {
     try {
-        const { email, name, password } = input
+        const { username, name, password } = input
         const hash = await hashPassword(password)
         const user = await db.insert(usersTable).values({
             name,
-            email,
+            username,
             password: hash,
         }).returning()
         return user
@@ -46,9 +46,9 @@ export const getUserById = async (id: string) => {
     }
 }
 
-export const getUserByEmail = async (email: string) => {
+export const getUserByUsername = async (username: string) => {
     try {
-        const user = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1)
+        const user = await db.select().from(usersTable).where(eq(usersTable.username, username)).limit(1)
         if (user.length === 0) {
             return null
         }
@@ -63,13 +63,29 @@ export const seedAdmin = async () => {
         const password = await hashPassword("123456")
         await db.insert(usersTable).values({
             name: "Admin",
-            email: "Admin@app.com",
+            username: "admin",
             password,
             role: "ADMIN"
         })
         return {
             message: "Seeded Successfully"
         }
+    } catch (error) {
+        throw error
+    }
+}
+
+export async function updateUser(id: string, values: Partial<CreateUserInput>) {
+    try {
+        if (values.password) {
+            const hash = await hashPassword(values.password)
+            values.password = hash
+        }
+
+        const updated = await db.update(usersTable)
+            .set(values).where(eq(usersTable.id, id)).returning()
+        return updated[0]
+
     } catch (error) {
         throw error
     }

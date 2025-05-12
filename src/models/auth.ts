@@ -1,7 +1,7 @@
 import { t } from "elysia";
 
 export const signInSchema = t.Object({
-    email: t.String({ format: 'email' }),
+    username: t.String(),
     password: t.String()
 })
 
